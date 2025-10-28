@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#667eea"/>
+  <title>Volumen Limpio - PWA</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" href="icon-192.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --bg: #ffffff;
+      --text: #2c3e50;
+      --card: #f9fafb;
+      --radius: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,.1);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #f1f1f1;
+        --card: #1e1e1e;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; scroll-behavior: smooth; }
+    header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 60px 20px 40px; text-align: center; border-radius: 0 0 var(--radius) var(--radius); }
+    nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+    nav button { background: none; border: none; color: var(--text); font-weight: 600; padding: 10px; cursor: pointer; }
+    section { padding: 30px 20px; }
+    .card { background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .install-btn { display: none; background: var(--primary); color: white; padding: 12px 24px; border: none; border-radius: 50px; margin: 20px auto; display: block; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💪 Volumen Limpio</h1>
+    <p>66 kg → Meta: 70 kg</p>
+    <button class="install-btn" id="installBtn">Instalar App</button>
+  </header>
+
+  <nav>
+    <button onclick="scrollTo('dieta')">Dieta</button>
+    <button onclick="scrollTo('entreno')">Entreno</button>
+    <button onclick="scrollTo('progreso')">Progreso</button>
+  </nav>
+
+  <section id="dieta">
+    <h2>🍽️ Dieta</h2>
+    <div class="card"><h3>Desayuno (~600 kcal)</h3><ul><li>3 huevos + avena + plátano + leche</li></ul></div>
+    <div class="card"><h3>Almuerzo (~800 kcal)</h3><ul><li>Pollo + arroz + ensalada + camote</li></ul></div>
+  </section>
+
+  <section id="entreno">
+    <h2>🏋️‍♂️ Entrenamiento</h2>
+    <div class="card"><h3>Día 1: Pecho + Tríceps</h3><p>Flexiones, press de piso, fondos...</p></div>
+    <div class="card"><h3>Día 2: Espalda + Bíceps</h3><p>Remo, dominadas, curl...</p></div>
+  </section>
+
+  <section id="progreso">
+    <h2>📈 Progreso</h2>
+    <div class="card"><p>Peso actual: <strong>66 kg</strong></p><p>Meta: 70 kg</p></div>
+  </section>
+
+  <script>
+    function scrollTo(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    // Instalación PWA
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+      installBtn.addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
